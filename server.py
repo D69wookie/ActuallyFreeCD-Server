@@ -3,7 +3,7 @@ from drive_discovery import find_cd_drives
 
 app = Flask(__name__)
 
-SERVER_VERSION = "0.3"
+SERVER_VERSION = "0.4"
 
 
 @app.route("/")

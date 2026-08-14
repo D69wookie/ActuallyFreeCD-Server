@@ -75,7 +75,6 @@ def get_sg_name(sr_path):
     except Exception:
         return None
 
-
 def get_disc_info(device_path):
     """
     Ask cdparanoia for the audio CD table of contents.
@@ -110,18 +109,25 @@ def get_disc_info(device_path):
         tracks = []
 
         track_pattern = re.compile(
-            r"^\s*(\d+)\.\s+\d+\s+\[(\d+):(\d+)\.(\d+)\]",
+            r"^\s*(\d+)\.\s+(\d+)\s+\[(\d+):(\d+)\.(\d+)\]\s+"
+            r"(\d+)\s+\[(\d+):(\d+)\.(\d+)\]",
             re.MULTILINE,
         )
 
         for match in track_pattern.finditer(output):
             number = int(match.group(1))
-            minutes = int(match.group(2))
-            seconds = int(match.group(3))
-            frames = int(match.group(4))
+            sectors = int(match.group(2))
+
+            minutes = int(match.group(3))
+            seconds = int(match.group(4))
+            frames = int(match.group(5))
+
+            start_sector = int(match.group(6))
 
             tracks.append({
                 "number": number,
+                "sectors": sectors,
+                "start_sector": start_sector,
                 "minutes": minutes,
                 "seconds": seconds,
                 "frames": frames,
@@ -160,6 +166,7 @@ def get_disc_info(device_path):
             **empty_disc,
             "error": str(exc),
         }
+
 
 
 def find_cd_drives():
