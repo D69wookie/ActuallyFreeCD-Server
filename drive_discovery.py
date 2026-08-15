@@ -2,6 +2,7 @@ from pathlib import Path
 import os
 import re
 import subprocess
+from musicbrainz import calculate_disc_id
 
 
 # Where the container can see host device nodes.
@@ -147,13 +148,16 @@ def get_disc_info(device_path):
 
             total_length = f"{total_minutes:02d}:{total_seconds:02d}"
 
-        return {
+            musicbrainz = calculate_disc_id(tracks)
+
+            return {
             "present": True,
             "audio": True,
             "track_count": len(tracks),
             "length": total_length,
             "tracks": tracks,
-        }
+            "musicbrainz": musicbrainz,
+            }
 
     except subprocess.TimeoutExpired:
         return {
