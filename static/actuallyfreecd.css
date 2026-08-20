@@ -1,0 +1,1233 @@
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+
+    background: #eeeeee;
+    color: #111111;
+
+    font-family:
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    font-size: 13px;
+}
+
+body {
+    overflow: auto;
+}
+
+#scaleContainer {
+    width: 1150px;
+    height: 850px;
+
+    margin: 16px auto;
+}
+
+.app {
+    position: relative;
+
+    width: 1150px;
+    height: 850px;
+
+    padding: 18px;
+
+    background: white;
+
+    box-shadow:
+        0 2px 12px
+        rgba(0, 0, 0, 0.14);
+}
+
+
+/* ========================================================== */
+/* COMMON */
+/* ========================================================== */
+
+button,
+input,
+select {
+    font-family:
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    font-size: 13px;
+}
+
+button {
+    height: 28px;
+
+    padding: 0 10px;
+
+    border:
+        1px solid #888888;
+
+    border-radius: 1px;
+
+    background: #e5e5e5;
+
+    color: #111111;
+}
+
+button:disabled {
+    color: #999999;
+
+    border-color:
+        #c8c8c8;
+
+    background:
+        #eeeeee;
+}
+
+input,
+select {
+    height: 28px;
+
+    padding:
+        2px 5px;
+
+    border:
+        1px solid #a6a6a6;
+
+    background:
+        white;
+}
+
+.lock-button {
+    width: 24px;
+    height: 24px;
+
+    padding: 0;
+
+    font-family:
+        "Segoe UI Symbol",
+        "Segoe UI",
+        sans-serif;
+
+    font-size: 13px;
+}
+
+
+/* ========================================================== */
+/* HEADER */
+/* ========================================================== */
+
+.header {
+    position: absolute;
+
+    left: 18px;
+    top: 18px;
+
+    width: 1114px;
+    height: 32px;
+}
+
+.brand {
+    position: absolute;
+
+    left: 0;
+    top: -2px;
+
+    font-size: 28px;
+    font-weight: bold;
+
+    line-height: 32px;
+}
+
+.brand span,
+.about-brand span {
+    color: #850e9e;
+}
+
+.disc-status {
+    position: absolute;
+
+    left: 207px;
+    top: 7px;
+
+    width: 420px;
+
+    color: #666666;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow:
+        ellipsis;
+}
+
+.header-actions {
+    position: absolute;
+
+    right: 4px;
+    top: 0;
+
+    height: 32px;
+}
+
+.reread-button {
+    width: 105px;
+}
+
+.eject-button {
+    width: 75px;
+
+    margin-left: 8px;
+}
+
+.metadata-button {
+    width: 105px;
+
+    margin-left: 8px;
+
+    font-weight: 600;
+}
+
+.about-button {
+    width: 70px;
+
+    margin-left: 8px;
+}
+
+.metadata-source {
+    display: inline-block;
+
+    height: 32px;
+
+    margin-left: 8px;
+
+    padding:
+        7px 9px;
+
+    border:
+        1px solid #cccccc;
+
+    border-radius: 4px;
+
+    color: #555555;
+}
+
+
+/* ========================================================== */
+/* DISC PANEL */
+/* ========================================================== */
+
+.disc-panel {
+    position: absolute;
+
+    left: 18px;
+    top: 62px;
+
+    width: 1114px;
+    height: 180px;
+
+    border:
+        1px solid #cccccc;
+
+    border-radius: 6px;
+}
+
+
+/* DRIVE */
+
+.drive-column {
+    position: absolute;
+
+    left: 12px;
+    top: 12px;
+
+    width: 270px;
+    height: 155px;
+}
+
+.drive-label {
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    font-weight: 600;
+}
+
+.drive-select {
+    position: absolute;
+
+    left: 0;
+    top: 21px;
+
+    width: 184px;
+    height: 30px;
+}
+
+.refresh-button {
+    position: absolute;
+
+    left: 192px;
+    top: 21px;
+
+    width: 78px;
+    height: 30px;
+}
+
+.drive-status {
+    position: absolute;
+
+    left: 0;
+    top: 60px;
+
+    font-weight: 600;
+}
+
+.drive-model {
+    position: absolute;
+
+    left: 0;
+    top: 81px;
+
+    width: 270px;
+
+    color: #666666;
+}
+
+.drive-settings-button {
+    position: absolute;
+
+    left: 0;
+    top: 108px;
+
+    width: 120px;
+    height: 27px;
+}
+
+
+/* ARTWORK */
+
+.artwork-column {
+    position: absolute;
+
+    left: 296px;
+    top: 12px;
+
+    width: 145px;
+    height: 155px;
+}
+
+.artwork-frame {
+    position: absolute;
+
+    left: 7px;
+    top: 0;
+
+    width: 130px;
+    height: 130px;
+
+    border:
+        1px solid #bbbbbb;
+
+    overflow: hidden;
+
+    background: #eeeeee;
+}
+
+.artwork-placeholder {
+    position: absolute;
+
+    inset: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #888888;
+}
+
+.artwork-frame img {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    background: white;
+}
+
+.art-load {
+    position: absolute;
+
+    left: 0;
+    top: 136px;
+
+    width: 52px;
+    height: 25px;
+
+    padding: 0;
+}
+
+.art-remove {
+    position: absolute;
+
+    left: 56px;
+    top: 136px;
+
+    width: 58px;
+    height: 25px;
+
+    padding: 0;
+}
+
+.art-lock {
+    position: absolute;
+
+    left: 118px;
+    top: 136px;
+}
+
+
+/* ========================================================== */
+/* METADATA */
+/* ========================================================== */
+
+.metadata-column {
+    position: absolute;
+
+    left: 455px;
+    top: 12px;
+
+    width: 646px;
+    height: 155px;
+}
+
+.metadata-column label {
+    font-weight: 600;
+}
+
+.match-label {
+    position: absolute;
+
+    left: 0;
+    top: 7px;
+}
+
+.match-select {
+    position: absolute;
+
+    left: 90px;
+    top: 0;
+
+    width: 556px;
+    height: 29px;
+}
+
+
+.artist-label {
+    position: absolute;
+
+    left: 0;
+    top: 45px;
+}
+
+.artist-input {
+    position: absolute;
+
+    left: 90px;
+    top: 36px;
+
+    width: 275px;
+}
+
+.artist-lock {
+    position: absolute;
+
+    left: 369px;
+    top: 38px;
+}
+
+
+.year-label {
+    position: absolute;
+
+    left: 402px;
+    top: 45px;
+}
+
+.year-input {
+    position: absolute;
+
+    left: 472px;
+    top: 36px;
+
+    width: 142px;
+}
+
+.year-lock {
+    position: absolute;
+
+    left: 618px;
+    top: 38px;
+}
+
+
+.album-label {
+    position: absolute;
+
+    left: 0;
+    top: 80px;
+}
+
+.album-input {
+    position: absolute;
+
+    left: 90px;
+    top: 71px;
+
+    width: 275px;
+}
+
+.album-lock {
+    position: absolute;
+
+    left: 369px;
+    top: 73px;
+}
+
+
+.genre-label {
+    position: absolute;
+
+    left: 402px;
+    top: 80px;
+}
+
+.genre-input {
+    position: absolute;
+
+    left: 472px;
+    top: 71px;
+
+    width: 142px;
+}
+
+.genre-lock {
+    position: absolute;
+
+    left: 618px;
+    top: 73px;
+}
+
+
+.release-label {
+    position: absolute;
+
+    left: 0;
+    top: 115px;
+}
+
+.release-input {
+    position: absolute;
+
+    left: 90px;
+    top: 106px;
+
+    width: 275px;
+}
+
+
+.disc-label {
+    position: absolute;
+
+    left: 402px;
+    top: 115px;
+}
+
+.disc-number {
+    position: absolute;
+
+    left: 472px;
+    top: 106px;
+
+    width: 58px;
+
+    text-align: center;
+}
+
+.disc-of {
+    position: absolute;
+
+    left: 536px;
+    top: 113px;
+
+    width: 24px;
+
+    text-align: center;
+}
+
+.disc-count {
+    position: absolute;
+
+    left: 560px;
+    top: 106px;
+
+    width: 54px;
+
+    text-align: center;
+}
+
+.disc-lock {
+    position: absolute;
+
+    left: 618px;
+    top: 108px;
+}
+
+
+/* ========================================================== */
+/* TRACK HEADER */
+/* ========================================================== */
+
+.tracks-title {
+    position: absolute;
+
+    left: 18px;
+    top: 255px;
+
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.retry-button {
+    position: absolute;
+
+    left: 507px;
+    top: 251px;
+
+    width: 100px;
+    height: 27px;
+}
+
+.select-all {
+    position: absolute;
+
+    left: 944px;
+    top: 251px;
+
+    width: 85px;
+    height: 27px;
+
+    white-space: nowrap;
+}
+
+.select-none {
+    position: absolute;
+
+    left: 1037px;
+    top: 251px;
+
+    width: 95px;
+    height: 27px;
+
+    padding:
+        0 7px;
+
+    white-space: nowrap;
+}
+
+
+/* ========================================================== */
+/* TRACK GRID */
+/* ========================================================== */
+
+.track-grid {
+    position: absolute;
+
+    left: 18px;
+    top: 285px;
+
+    width: 1114px;
+    height: 330px;
+
+    overflow: auto;
+
+    border:
+        1px solid #aeb9c8;
+}
+
+.track-table {
+    width: 100%;
+
+    border-collapse:
+        collapse;
+
+    table-layout:
+        fixed;
+
+    font-size: 13px;
+}
+
+.track-table th {
+    height: 26px;
+
+    padding:
+        3px 5px;
+
+    border-right:
+        1px solid #d7d7d7;
+
+    border-bottom:
+        1px solid #b9b9b9;
+
+    background:
+        #f2f2f2;
+
+    text-align: left;
+
+    font-weight: 400;
+}
+
+.track-table td {
+    height: 28px;
+
+    padding:
+        2px 5px;
+
+    border-bottom:
+        1px solid #e2e2e2;
+}
+
+.track-table input[type="text"] {
+    width: 100%;
+    height: 24px;
+
+    padding:
+        1px 3px;
+
+    border:
+        1px solid transparent;
+
+    background:
+        transparent;
+}
+
+.track-table input[type="text"]:focus {
+    border-color:
+        #850e9e;
+
+    background:
+        white;
+}
+
+.track-checkbox-cell {
+    text-align: center;
+}
+
+.rip-column {
+    width: 38px;
+}
+
+.number-column {
+    width: 45px;
+}
+
+.artist-column {
+    width: 220px;
+}
+
+.duration-column {
+    width: 80px;
+}
+
+.status-column {
+    width: 210px;
+}
+
+
+/* ========================================================== */
+/* RIP PANEL */
+/* ========================================================== */
+
+.rip-panel {
+    position: absolute;
+
+    left: 18px;
+    top: 627px;
+
+    width: 1114px;
+    height: 205px;
+
+    border:
+        1px solid #cccccc;
+
+    border-radius: 6px;
+}
+
+
+.destination-label {
+    position: absolute;
+
+    left: 10px;
+    top: 17px;
+
+    font-weight: 600;
+}
+
+.destination-input {
+    position: absolute;
+
+    left: 95px;
+    top: 10px;
+
+    width: 622px;
+}
+
+.browse-button {
+    position: absolute;
+
+    left: 727px;
+    top: 10px;
+
+    width: 82px;
+}
+
+.rip-button {
+    position: absolute;
+
+    left: 819px;
+    top: 8px;
+
+    width: 185px;
+    height: 32px;
+
+    border-color:
+        #1b5e20;
+
+    background:
+        #2e7d32;
+
+    color: white;
+
+    font-weight: bold;
+}
+
+.stop-button {
+    position: absolute;
+
+    left: 1014px;
+    top: 8px;
+
+    width: 85px;
+    height: 32px;
+
+    border-color:
+        #9a0007;
+
+    background:
+        #d32f2f;
+
+    color: white;
+
+    font-weight: bold;
+    font-size: 14px;
+}
+
+
+.output-label {
+    position: absolute;
+
+    left: 10px;
+    top: 58px;
+
+    font-weight: 600;
+}
+
+.output-select {
+    position: absolute;
+
+    left: 62px;
+    top: 50px;
+
+    width: 135px;
+}
+
+.mp3-label {
+    position: absolute;
+
+    left: 211px;
+    top: 58px;
+
+    font-weight: 600;
+}
+
+.mp3-select {
+    position: absolute;
+
+    left: 291px;
+    top: 50px;
+
+    width: 155px;
+}
+
+.mode-label {
+    position: absolute;
+
+    left: 464px;
+    top: 58px;
+
+    font-weight: 600;
+}
+
+.mode-select {
+    position: absolute;
+
+    left: 530px;
+    top: 50px;
+
+    width: 135px;
+}
+
+
+.naming-label {
+    position: absolute;
+
+    left: 10px;
+    top: 93px;
+
+    font-weight: 600;
+}
+
+.naming-select {
+    position: absolute;
+
+    left: 69px;
+    top: 85px;
+
+    width: 430px;
+}
+
+
+/* RIP MODE HELP NOW LIVES BESIDE NAMING */
+
+.rip-description {
+    position: absolute;
+
+    left: 520px;
+    top: 86px;
+
+    width: 575px;
+    height: 34px;
+
+    color: #666666;
+
+    font-size: 11.5px;
+
+    line-height: 16px;
+
+    overflow: hidden;
+}
+
+
+.after-label {
+    position: absolute;
+
+    left: 10px;
+    top: 128px;
+
+    font-weight: 600;
+}
+
+.eject-after,
+.open-after {
+    position: absolute;
+
+    top: 123px;
+
+    display: flex;
+
+    align-items: center;
+
+    height: 24px;
+
+    gap: 6px;
+
+    white-space: nowrap;
+}
+
+.eject-after {
+    left: 96px;
+}
+
+.open-after {
+    left: 205px;
+}
+
+.eject-after input,
+.open-after input {
+    width: 14px;
+    height: 14px;
+
+    margin: 0;
+
+    flex:
+        0 0 14px;
+}
+
+
+/* FULL WIDTH STATUS AREA */
+
+.rip-status {
+    position: absolute;
+
+    left: 10px;
+    top: 150px;
+
+    width: 700px;
+    height: 18px;
+
+    font-weight: 600;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+.rip-summary {
+    position: absolute;
+
+    right: 10px;
+    top: 150px;
+
+    width: 375px;
+    height: 18px;
+
+    text-align: right;
+
+    color: #555555;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+.progress-shell {
+    position: absolute;
+
+    left: 10px;
+    top: 174px;
+
+    width: 1092px;
+    height: 18px;
+
+    overflow: hidden;
+
+    border:
+        1px solid #b7b7b7;
+
+    background:
+        #eeeeee;
+}
+
+.progress-bar {
+    width: 0%;
+    height: 100%;
+
+    background:
+        #850e9e;
+
+    color: white;
+
+    text-align: center;
+
+    font-size: 11px;
+
+    line-height: 16px;
+
+    font-weight: 600;
+
+    transition:
+        width 0.2s linear;
+}
+
+
+/* ========================================================== */
+/* ABOUT WINDOW */
+/* ========================================================== */
+
+.modal-overlay {
+    position: fixed;
+
+    inset: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background:
+        rgba(0, 0, 0, 0.38);
+
+    z-index: 50;
+}
+
+.modal-overlay[hidden] {
+    display: none;
+}
+
+.about-dialog {
+    width: 455px;
+
+    padding:
+        24px 28px 22px;
+
+    border:
+        1px solid #aaaaaa;
+
+    border-radius: 6px;
+
+    background: white;
+
+    text-align: center;
+
+    box-shadow:
+        0 10px 36px
+        rgba(0, 0, 0, 0.28);
+}
+
+.about-disc {
+    display: flex;
+
+    width: 82px;
+    height: 82px;
+
+    margin:
+        0 auto 12px;
+
+    align-items: center;
+    justify-content: center;
+
+    border:
+        2px solid #888888;
+
+    border-radius: 50%;
+
+    background:
+        #eeeeee;
+
+    color:
+        #850e9e;
+
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.about-brand {
+    font-size: 26px;
+    font-weight: 700;
+}
+
+.about-version {
+    margin-top: 3px;
+
+    color: #666666;
+
+    font-size: 12px;
+}
+
+.about-description {
+    margin:
+        18px 18px 16px;
+
+    color: #333333;
+
+    line-height: 19px;
+}
+
+.about-credit-box {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+
+    padding: 14px;
+
+    border:
+        1px solid #dddddd;
+
+    border-radius: 5px;
+
+    background:
+        #f5f5f5;
+}
+
+.about-credit-box strong {
+    font-size: 13px;
+}
+
+.about-credit-box span {
+    color: #666666;
+
+    font-size: 11px;
+}
+
+.about-divider {
+    height: 1px;
+
+    width: 80%;
+
+    margin:
+        8px auto;
+
+    background:
+        #d3d3d3;
+}
+
+.about-copyright {
+    margin-top: 13px;
+
+    color: #777777;
+
+    font-size: 11px;
+}
+
+.about-ok {
+    width: 80px;
+
+    margin-top: 16px;
+}
+
+
+/* ========================================================== */
+/* SCALE WHOLE APP */
+/* ========================================================== */
+
+@media (max-width: 1170px) {
+
+    #scaleContainer {
+        transform-origin:
+            top left;
+
+        transform:
+            scale(
+                calc(
+                    (100vw - 20px)
+                    / 1150
+                )
+            );
+
+        margin-left: 10px;
+        margin-right: 0;
+    }
+}

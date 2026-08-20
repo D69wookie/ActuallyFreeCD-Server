@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>ActuallyFreeCD</title>
+
+    <link
+        rel="stylesheet"
+        href="/static/actuallyfreecd.css?v=0.9ad"
+    >
+
+<style>
+.folder-browser-modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:1000}.folder-browser-modal[hidden]{display:none}.folder-browser-dialog{width:min(560px,calc(100vw - 32px));max-height:min(680px,calc(100vh - 32px));overflow:hidden;background:#20242a;border:1px solid #4a5058;border-radius:10px;padding:18px;box-sizing:border-box}.folder-browser-header,.folder-browser-toolbar,.folder-browser-actions{display:flex;gap:10px;align-items:center}.folder-browser-header{justify-content:space-between}.folder-browser-header h2{margin:0}.folder-browser-path{margin:14px 0 10px;padding:10px;background:#15181c;border-radius:6px;overflow-wrap:anywhere}.folder-browser-list{margin:12px 0;min-height:180px;max-height:360px;overflow-y:auto;border:1px solid #3b4148;border-radius:6px;padding:6px}.folder-browser-item{display:block;width:100%;text-align:left;margin:3px 0}.folder-browser-empty{padding:16px;opacity:.7;text-align:center}.folder-browser-actions{justify-content:flex-end}.folder-browser-dialog,.folder-browser-header h2,.folder-browser-path,.folder-browser-list,.folder-browser-empty{color:#f5f5f7}.folder-browser-item{color:#f5f5f7;background:#2b3037;border-color:#555d68}.folder-browser-item:hover,.folder-browser-item:focus{background:#363c45}.folder-browser-path{background:#15181c;border:1px solid #3b4148}.folder-browser-empty{opacity:.85}#folderBrowserSelect{background:#8f159f;border-color:#8f159f;color:#fff;font-weight:700}#folderBrowserSelect:hover,#folderBrowserSelect:focus{background:#a31ab5;border-color:#a31ab5;color:#fff}
+</style>
+    <link rel="icon" type="image/png" href="/static/ActuallyFreeCD.png?v=0.9ad">
+</head>
+
+<body>
+
+<div id="scaleContainer">
+
+<div class="app">
+
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <div class="brand">
+            Actually<span>Free</span>CD
+        </div>
+
+        <div
+            id="discStatus"
+            class="disc-status"
+        >
+            Waiting for disc...
+        </div>
+
+        <div class="header-actions">
+
+            <button
+                id="readDiscButton"
+                class="reread-button"
+            >
+                Re-read Disc
+            </button>
+
+            <button
+                id="ejectButton"
+                class="eject-button"
+               
+            >
+                Eject
+            </button>
+
+            <select
+                id="metadataButton"
+                class="metadata-button"
+                title="Choose metadata source"
+            >
+                <option value="musicbrainz">MusicBrainz</option>
+                <option value="cdtext">CD-Text</option>
+                <option value="manual">Manual</option>
+            </select>
+
+            <button
+                id="aboutButton"
+                class="about-button"
+            >
+                About
+            </button>
+
+            <div
+                id="metadataSource"
+                class="metadata-source"
+            >
+                Source: None
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- DISC PANEL -->
+
+    <div class="disc-panel">
+
+
+        <!-- DRIVE -->
+
+        <div class="drive-column">
+
+            <label class="drive-label">
+                Optical Drive
+            </label>
+
+            <select
+                id="driveSelect"
+                class="drive-select"
+            >
+                <option></option>
+            </select>
+
+            <button
+                id="refreshButton"
+                class="refresh-button"
+            >
+                Refresh
+            </button>
+
+            <div
+                id="driveStatus"
+                class="drive-status"
+            >
+                Checking drive...
+            </div>
+
+            <div
+                id="driveModel"
+                class="drive-model"
+            >
+                Unknown
+            </div>
+
+            <button
+                id="driveSettingsButton"
+                class="drive-settings-button"
+                disabled
+            >
+                Drive Settings...
+            </button>
+
+        </div>
+
+
+        <!-- ARTWORK -->
+
+        <div class="artwork-column">
+
+            <div class="artwork-frame">
+
+                <div
+                    id="artworkPlaceholder"
+                    class="artwork-placeholder"
+                >
+                    No Artwork
+                </div>
+
+                <img
+                    id="artworkImage"
+                    alt="Album artwork"
+                    hidden
+                >
+
+            </div>
+
+            <input
+                id="artworkFileInput"
+                type="file"
+                accept="image/jpeg,image/png"
+                hidden
+            >
+
+            <button
+                id="loadArtworkButton"
+                class="art-load"
+                disabled
+            >
+                Load...
+            </button>
+
+            <button
+                id="removeArtworkButton"
+                class="art-remove"
+                disabled
+            >
+                Remove
+            </button>
+
+            <button
+                class="lock-button art-lock"
+            >
+                🔓
+            </button>
+
+        </div>
+
+
+        <!-- METADATA -->
+
+        <div class="metadata-column">
+
+            <label class="match-label">
+                Match:
+            </label>
+
+            <select
+                id="releaseMatch"
+                class="match-select"
+                disabled
+            >
+                <option></option>
+            </select>
+
+
+            <label class="artist-label">
+                Album Artist:
+            </label>
+
+            <input
+                id="albumArtist"
+                class="artist-input"
+                type="text"
+            >
+
+            <button
+                class="lock-button artist-lock"
+            >
+                🔓
+            </button>
+
+
+            <label class="year-label">
+                Year:
+            </label>
+
+            <input
+                id="year"
+                class="year-input"
+                type="text"
+            >
+
+            <button
+                class="lock-button year-lock"
+            >
+                🔓
+            </button>
+
+
+            <label class="album-label">
+                Album:
+            </label>
+
+            <input
+                id="albumTitle"
+                class="album-input"
+                type="text"
+            >
+
+            <button
+                class="lock-button album-lock"
+            >
+                🔓
+            </button>
+
+
+            <label class="genre-label">
+                Genre:
+            </label>
+
+            <input
+                id="genre"
+                class="genre-input"
+                type="text"
+            >
+
+            <button
+                class="lock-button genre-lock"
+            >
+                🔓
+            </button>
+
+
+            <label class="release-label">
+                Release ID:
+            </label>
+
+            <input
+                id="releaseId"
+                class="release-input"
+                type="text"
+                readonly
+            >
+
+
+            <label class="disc-label">
+                Disc:
+            </label>
+
+            <input
+                id="discNumber"
+                class="disc-number"
+                type="text"
+                value="1"
+            >
+
+            <span class="disc-of">
+                of
+            </span>
+
+            <input
+                id="discCount"
+                class="disc-count"
+                type="text"
+                value="1"
+            >
+
+            <button
+                class="lock-button disc-lock"
+            >
+                🔓
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- TRACKS -->
+
+    <div class="tracks-title">
+        Tracks
+    </div>
+
+    <button
+        id="retryFailedButton"
+        class="retry-button"
+        disabled
+    >
+        Retry Failed
+    </button>
+
+    <button
+        id="selectAllButton"
+        class="select-all"
+    >
+        Select All
+    </button>
+
+    <button
+        id="selectNoneButton"
+        class="select-none"
+    >
+        Select None
+    </button>
+
+
+    <div class="track-grid">
+
+        <table class="track-table">
+
+            <thead>
+
+                <tr>
+                    <th class="rip-column">Rip</th>
+                    <th class="number-column">#</th>
+                    <th>Title</th>
+                    <th class="artist-column">Artist</th>
+                    <th class="duration-column">Duration</th>
+                    <th class="status-column">Status</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="trackBody">
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- RIP FOOTER -->
+
+    <div class="rip-panel">
+
+        <label class="destination-label">
+            Destination:
+        </label>
+
+        <input
+            id="destination"
+            class="destination-input"
+            type="text"
+            value="/music"
+            title="Container music destination"
+            readonly
+        >
+
+        <button
+            id="browseButton"
+            class="browse-button"
+        >
+            Browse...
+        </button>
+
+
+        <button
+            id="ripButton"
+            class="rip-button"
+            disabled
+        >
+            Rip Selected to FLAC
+        </button>
+
+        <button
+            id="stopButton"
+            class="stop-button"
+            disabled
+        >
+            STOP
+        </button>
+
+
+        <label class="output-label">
+            Output:
+        </label>
+
+        <select
+            id="outputFormat"
+            class="output-select"
+        >
+            <option>FLAC</option>
+            <option>MP3</option>
+            <option>FLAC + MP3</option>
+        </select>
+
+
+        <label class="mp3-label">
+            MP3 quality:
+        </label>
+
+        <select
+            id="mp3Quality"
+            class="mp3-select"
+        >
+            <option>V0 (Highest VBR)</option>
+            <option>V2 (High VBR)</option>
+            <option>320 kbps CBR</option>
+        </select>
+
+
+        <label class="mode-label">
+            Rip mode:
+        </label>
+
+        <select
+            id="ripMode"
+            class="mode-select"
+        >
+            <option>Automatic</option>
+            <option>Secure</option>
+            <option>Fast</option>
+        </select>
+
+
+        <label class="naming-label">
+            Naming:
+        </label>
+
+        <select
+            id="namingPreset"
+            class="naming-select"
+        >
+            <option>
+                Artist\Album (Year)\## - Title
+            </option>
+
+            <option>
+                Artist\Album\## - Title
+            </option>
+
+            <option>
+                Album Artist\Album (Year)\Disc #\## - Title
+            </option>
+
+            <option>
+                Album Artist\Album (Year)\## - Artist - Title
+            </option>
+        </select>
+
+
+        <div class="after-label">
+            After ripping:
+        </div>
+
+        <label class="eject-after">
+
+            <input
+                id="ejectAfterRip"
+                type="checkbox"
+            >
+
+            Eject disc
+
+        </label>
+
+        
+
+
+        <div
+            id="ripStatus"
+            class="rip-status"
+        >
+            Ready.
+        </div>
+
+
+        <div
+            id="ripSummary"
+            class="rip-summary"
+        >
+        </div>
+
+
+        <div class="progress-shell">
+
+            <div
+                id="progressBar"
+                class="progress-bar"
+            >
+            </div>
+
+        </div>
+
+
+        <div
+            id="ripModeDescription"
+            class="rip-description"
+        >
+            Fast read first; if AccurateRip does not confirm it,
+            retry once fast before secure fallback.
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+
+<!-- ABOUT WINDOW -->
+
+<div
+    id="aboutOverlay"
+    class="modal-overlay"
+    hidden
+>
+
+    <div class="about-dialog">
+
+        <img
+            class="about-logo"
+            src="/static/ActuallyFreeCD.png?v=0.9ad"
+            alt="ActuallyFreeCD logo"
+            style="display:block; width:190px; max-width:70%; height:auto; margin:0 auto 14px auto; object-fit:contain;"
+        >
+
+        <div class="about-brand">
+            Actually<span>Free</span>CD
+        </div>
+
+        <div class="about-version">
+            Server / Web Interface v<span id="aboutVersion">0.9p</span>
+        </div>
+
+        <p class="about-description">
+            A straightforward audio CD ripper that does what it says
+            without hiding useful features behind a paywall.
+        </p>
+
+        <div class="about-credit-box">
+
+            <strong>
+                Created by Darren Alexander
+            </strong>
+
+            <span>
+                Concept, direction and testing
+            </span>
+
+            <div class="about-divider">
+            </div>
+
+            <strong>
+                Developed by Lex
+            </strong>
+
+            <span>
+                Application development and coding
+            </span>
+
+        </div>
+
+        <div class="about-credit-box">
+
+            <strong>
+                Third-Party Software &amp; Services
+            </strong>
+
+            <span>
+                CDParanoia · FLAC · LAME · Flask · Werkzeug · Requests
+            </span>
+
+            <div class="about-divider">
+            </div>
+
+            <span>
+                Metadata and artwork may be provided by MusicBrainz and
+                the Cover Art Archive. AccurateRip is used for optional
+                rip verification.
+            </span>
+
+            <span>
+                Third-party software remains subject to its respective
+                copyright and licence terms.
+            </span>
+
+        </div>
+
+        <div class="about-copyright">
+            Copyright © 2026 WookieSoft
+        </div>
+
+        <button
+            id="aboutCloseButton"
+            class="about-ok"
+        >
+            OK
+        </button>
+
+    </div>
+
+</div>
+
+
+<div id="folderBrowserModal" class="folder-browser-modal" hidden><div class="folder-browser-dialog"><div class="folder-browser-header"><h2>Select Music Folder</h2><button id="folderBrowserClose" type="button">×</button></div><div id="folderBrowserPath" class="folder-browser-path">/music</div><div class="folder-browser-toolbar"><button id="folderBrowserUp" type="button">Up</button><button id="folderBrowserNew" type="button">New Folder</button></div><div id="folderBrowserList" class="folder-browser-list"></div><div class="folder-browser-actions"><button id="folderBrowserCancel" type="button">Cancel</button><button id="folderBrowserSelect" type="button">Use This Folder</button></div></div>
+
+
+<div
+    id="ripCompleteOverlay"
+    class="about-overlay"
+    hidden
+>
+    <div
+        class="about-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="ripCompleteTitle"
+    >
+        <h2 id="ripCompleteTitle">
+            Rip Complete
+        </h2>
+
+        <p id="ripCompleteMessage">
+            Rip completed successfully.
+        </p>
+
+        <div class="about-actions">
+            <button
+                id="ripCompleteCloseButton"
+                type="button"
+            >
+                OK
+            </button>
+        </div>
+    </div>
+</div>
+
+<script
+    src="/static/actuallyfreecd.js?v=0.9ad"
+></script>
+
+</div>
+</body>
+
+</html>

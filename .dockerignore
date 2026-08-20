@@ -1,0 +1,23 @@
+.git
+.gitignore
+__pycache__/
+*.pyc
+*.pyo
+
+# Old Docker exports / archives
+*.tar
+*.zip
+
+# Local test scripts and scratch files
+test_*.py
+*_test.py
+*.log
+
+# OS/editor clutter
+.DS_Store
+Thumbs.db
+*.tmp
+*.bak
+
+# Keep the LAME source archive used by Dockerfile:
+!lame-3.100.tar.gz

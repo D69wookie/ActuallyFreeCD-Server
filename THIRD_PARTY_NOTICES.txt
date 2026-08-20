@@ -1,0 +1,21 @@
+ActuallyFreeCD Server - Third-Party Notices
+==========================================
+
+ActuallyFreeCD Server uses or incorporates third-party software including:
+
+- CDParanoia - audio CD extraction
+- FLAC - Free Lossless Audio Codec
+- LAME 3.100 - MP3 encoding
+- Flask - Python web framework
+- Werkzeug - WSGI/web utilities
+- Requests - Python HTTP library
+
+ActuallyFreeCD may also access these third-party data/services:
+
+- MusicBrainz - optional music metadata
+- Cover Art Archive - optional album artwork
+- AccurateRip - optional rip verification
+
+Each third-party component remains subject to its own copyright, licence,
+and/or service terms. This notice is an acknowledgement and does not replace
+the licence files supplied with those components.
