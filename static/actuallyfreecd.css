@@ -190,6 +190,67 @@ select {
     font-weight: 600;
 }
 
+.cdtext-indicator {
+    position: absolute;
+
+    left: 90px;
+    top: 137px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    height: 18px;
+
+    color: #666666;
+
+    font-size: 11px;
+
+    white-space: nowrap;
+}
+
+.cdtext-dot {
+    display: inline-block;
+
+    width: 10px;
+    height: 10px;
+
+    flex: 0 0 10px;
+
+    border:
+        1px solid #777777;
+
+    border-radius: 50%;
+
+    background: #9a9a9a;
+}
+
+.cdtext-checking .cdtext-dot {
+    background: #d79b22;
+}
+
+.cdtext-available .cdtext-dot,
+.cdtext-using .cdtext-dot {
+    background: #2ca44f;
+}
+
+.cdtext-unavailable .cdtext-dot,
+.cdtext-unknown .cdtext-dot {
+    background: #9a9a9a;
+}
+
+.cdtext-using .cdtext-dot {
+    box-shadow:
+        0 0 5px
+        rgba(44, 164, 79, 0.75);
+}
+
+.cdtext-using .cdtext-label {
+    font-weight: 600;
+}
+
 .about-button {
     width: 70px;
 
@@ -1230,4 +1291,41 @@ select {
         margin-left: 10px;
         margin-right: 0;
     }
+}
+
+/* ========================================================== */
+/* RIP COMPLETION WINDOW */
+/* ========================================================== */
+
+#ripCompleteOverlay .about-dialog {
+    width: 470px;
+}
+
+#ripCompleteMessage {
+    margin:
+        18px 8px;
+
+    line-height: 20px;
+
+    white-space: pre-line;
+}
+
+#ripCompleteOverlay .about-actions {
+    display: flex;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    margin-top: 18px;
+}
+
+#ripCompleteRetryButton {
+    min-width: 110px;
+
+    font-weight: 600;
+}
+
+#ripCompleteCloseButton {
+    min-width: 80px;
 }

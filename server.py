@@ -29,7 +29,7 @@ from musicbrainz import lookup_disc
 
 app = Flask(__name__)
 
-SERVER_VERSION = "0.9ad"
+SERVER_VERSION = "1.0.2"
 
 MUSIC_ROOT = Path(
     os.environ.get(

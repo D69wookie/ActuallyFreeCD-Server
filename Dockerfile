@@ -31,6 +31,8 @@ RUN apt-get update && \
         flac \
         udev \
         file \
+        gosu \
+        passwd \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=lame-builder /opt/lame/bin/lame /usr/local/bin/lame
@@ -53,4 +55,8 @@ COPY ripper.py .
 COPY templates ./templates
 COPY static ./static
 
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod 0755 /usr/local/bin/docker-entrypoint.sh
+
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["python3", "server.py"]

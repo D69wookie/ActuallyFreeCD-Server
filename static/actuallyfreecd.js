@@ -8,8 +8,10 @@ let currentMetadata = null;
 let currentDriveReadOffset = 0;
 
 let currentRipJobId = null;
+let lastFinishedRipJob = null;
 let ripPollTimer = null;
 let metadataRequestGeneration = 0;
+let cdTextProbeGeneration = 0;
 
 let currentArtworkToken = "";
 let artworkEnabled = true;
@@ -239,6 +241,11 @@ const metadataSource =
         "metadataSource"
     );
 
+const cdTextIndicator =
+    document.getElementById(
+        "cdTextIndicator"
+    );
+
 const albumArtist =
     document.getElementById(
         "albumArtist"
@@ -426,6 +433,11 @@ const stopButton =
         "stopButton"
     );
 
+const retryFailedButton =
+    document.getElementById(
+        "retryFailedButton"
+    );
+
 const ripStatus =
     document.getElementById(
         "ripStatus"
@@ -464,6 +476,16 @@ const ripCompleteOverlay =
 const ripCompleteMessage =
     document.getElementById(
         "ripCompleteMessage"
+    );
+
+const ripCompleteTitle =
+    document.getElementById(
+        "ripCompleteTitle"
+    );
+
+const ripCompleteRetryButton =
+    document.getElementById(
+        "ripCompleteRetryButton"
     );
 
 const ripCompleteCloseButton =
@@ -931,6 +953,151 @@ function clearMetadata() {
     clearArtwork();
 
     renderTracks();
+}
+
+
+/* ============================================================
+   CD-TEXT INDICATOR
+   ============================================================ */
+
+function setCdTextIndicator(
+    state,
+    label
+) {
+
+    cdTextIndicator.className =
+        `cdtext-indicator cdtext-${state}`;
+
+    cdTextIndicator.title =
+        label;
+
+    cdTextIndicator.setAttribute(
+        "aria-label",
+        label
+    );
+
+    const labelElement =
+        cdTextIndicator.querySelector(
+            ".cdtext-label"
+        );
+
+    if (labelElement) {
+
+        labelElement.textContent =
+            label;
+    }
+}
+
+
+async function probeCdTextAvailability() {
+
+    const drive =
+        currentDrive;
+
+    const disc =
+        drive?.disc
+        || {};
+
+    if (
+        !drive
+        || !disc.present
+        || !disc.audio
+    ) {
+
+        setCdTextIndicator(
+            "unknown",
+            "CD-Text status unknown"
+        );
+
+        return;
+    }
+
+    const generation =
+        ++cdTextProbeGeneration;
+
+    setCdTextIndicator(
+        "checking",
+        "Checking CD-Text..."
+    );
+
+    try {
+
+        const response =
+            await fetch(
+                `/api/drives/${
+                    encodeURIComponent(
+                        drive.id
+                    )
+                }/metadata?source=cdtext`,
+                {
+                    cache:
+                        "no-store"
+                }
+            );
+
+        if (!response.ok) {
+
+            throw new Error(
+                (
+                    "CD-Text check returned "
+                    + response.status
+                )
+            );
+        }
+
+        const data =
+            await response.json();
+
+        if (
+            generation
+                !== cdTextProbeGeneration
+            || currentDrive?.id
+                !== drive.id
+        ) {
+
+            return;
+        }
+
+        const metadata =
+            data.metadata
+            || {};
+
+        const available =
+            metadata.status
+                === "matched"
+            && metadata.releases
+                ?.length > 0;
+
+        setCdTextIndicator(
+            available
+                ? "available"
+                : "unavailable",
+            available
+                ? "CD-Text available"
+                : "No CD-Text"
+        );
+
+    }
+    catch (error) {
+
+        console.warn(
+            "CD-Text availability check failed:",
+            error
+        );
+
+        if (
+            generation
+                === cdTextProbeGeneration
+            && currentDrive?.id
+                === drive.id
+        ) {
+
+            setCdTextIndicator(
+                "unknown",
+                "CD-Text status unknown"
+            );
+        }
+    }
 }
 
 
@@ -1869,6 +2036,19 @@ async function loadDrives() {
         return;
     }
 
+    lastFinishedRipJob =
+        null;
+
+    retryFailedButton.disabled =
+        true;
+
+    ++cdTextProbeGeneration;
+
+    setCdTextIndicator(
+        "unknown",
+        "CD-Text status unknown"
+    );
+
     await loadDestinationStatus();
 
     discStatus.textContent =
@@ -2114,6 +2294,14 @@ async function selectDrive(
     await loadMetadata(
         preferredMetadataSource
     );
+
+    if (
+        preferredMetadataSource
+        !== "cdtext"
+    ) {
+
+        await probeCdTextAvailability();
+    }
 }
 
 
@@ -2187,6 +2375,14 @@ async function loadMetadata(source = "musicbrainz") {
 
     metadataButton.disabled =
         true;
+
+    if (source === "cdtext") {
+
+        setCdTextIndicator(
+            "checking",
+            "Checking CD-Text..."
+        );
+    }
 
     const sourceName =
         source === "cdtext"
@@ -2280,6 +2476,14 @@ async function loadMetadata(source = "musicbrainz") {
                     )
                 );
 
+            if (source === "cdtext") {
+
+                setCdTextIndicator(
+                    "unavailable",
+                    "No CD-Text"
+                );
+            }
+
             ripStatus.textContent =
                 "Ready.";
 
@@ -2348,6 +2552,11 @@ async function loadMetadata(source = "musicbrainz") {
 
         if (source === "cdtext") {
 
+            setCdTextIndicator(
+                "using",
+                "Using CD-Text"
+            );
+
             discStatus.textContent =
                 "Audio CD detected — CD-Text loaded.";
 
@@ -2386,6 +2595,14 @@ async function loadMetadata(source = "musicbrainz") {
 
         currentMetadata =
             null;
+
+        if (source === "cdtext") {
+
+            setCdTextIndicator(
+                "unknown",
+                "CD-Text check failed"
+            );
+        }
 
         releaseMatch.innerHTML =
             (
@@ -2588,11 +2805,116 @@ function buildRipMetadata() {
 }
 
 
+
+function failedTrackNumbersFromJob(
+    job
+) {
+
+    return new Set(
+        (
+            job?.tracks
+            || []
+        )
+        .filter(
+            track =>
+                String(
+                    track.status
+                    || ""
+                ).toLowerCase()
+                === "failed"
+        )
+        .map(
+            track =>
+                Number(
+                    track.number
+                )
+        )
+        .filter(
+            number =>
+                Number.isFinite(
+                    number
+                )
+        )
+    );
+}
+
+
+function updateRetryFailedButton(
+    job = lastFinishedRipJob
+) {
+
+    const failedTracks =
+        failedTrackNumbersFromJob(
+            job
+        );
+
+    retryFailedButton.disabled =
+        currentRipJobId !== null
+        || failedTracks.size === 0;
+}
+
+
+async function retryFailedTracks() {
+
+    if (
+        currentRipJobId
+        || !lastFinishedRipJob
+    ) {
+
+        return;
+    }
+
+    const failedTracks =
+        failedTrackNumbersFromJob(
+            lastFinishedRipJob
+        );
+
+    if (!failedTracks.size) {
+
+        updateRetryFailedButton();
+        return;
+    }
+
+    trackBody
+        .querySelectorAll(
+            "tr"
+        )
+        .forEach(
+            row => {
+
+                const checkbox =
+                    row.querySelector(
+                        ".track-checkbox"
+                    );
+
+                if (!checkbox) {
+
+                    return;
+                }
+
+                checkbox.checked =
+                    failedTracks.has(
+                        Number(
+                            row.dataset
+                                .trackNumber
+                        )
+                    );
+            }
+        );
+
+    updateRipButtonState();
+
+    await startRip();
+}
+
 /* ============================================================
    START RIP
    ============================================================ */
 
 async function startRip() {
+
+    ripCompleteOverlay.hidden =
+        true;
 
     if (
         !currentDrive
@@ -2630,6 +2952,9 @@ async function startRip() {
 
         return;
     }
+
+    retryFailedButton.disabled =
+        true;
 
     resetTrackStatuses();
 
@@ -2790,6 +3115,7 @@ async function startRip() {
         );
 
         updateRipButtonState();
+        updateRetryFailedButton();
     }
 }
 
@@ -3069,6 +3395,50 @@ function finishRipJob(
         false
     );
 
+    lastFinishedRipJob =
+        job;
+
+    const failedTracks =
+        failedTrackNumbersFromJob(
+            job
+        );
+
+    if (failedTracks.size > 0) {
+
+        trackBody
+            .querySelectorAll(
+                "tr"
+            )
+            .forEach(
+                row => {
+
+                    const checkbox =
+                        row.querySelector(
+                            ".track-checkbox"
+                        );
+
+                    if (!checkbox) {
+
+                        return;
+                    }
+
+                    checkbox.checked =
+                        failedTracks.has(
+                            Number(
+                                row.dataset
+                                    .trackNumber
+                            )
+                        );
+                }
+            );
+
+        updateRipButtonState();
+    }
+
+    updateRetryFailedButton(
+        job
+    );
+
     if (
         job.status
         === "complete"
@@ -3089,6 +3459,12 @@ function finishRipJob(
                 + `/${job.total_tracks}`
                 + " selected tracks"
             );
+
+        ripCompleteTitle.textContent =
+            "Rip Complete";
+
+        ripCompleteRetryButton.hidden =
+            true;
 
         ripCompleteMessage.textContent =
             (
@@ -3141,13 +3517,18 @@ function finishRipJob(
     }
     else {
 
-        ripStatus.textContent =
-            job.error
-                ? (
-                    "Rip failed: "
-                    + job.error
+        const failedTracks =
+            Array.from(
+                failedTrackNumbersFromJob(
+                    job
                 )
-                : "Rip failed.";
+            )
+            .sort(
+                (a, b) => a - b
+            );
+
+        ripStatus.textContent =
+            "Rip completed with errors.";
 
         ripSummary.textContent =
             (
@@ -3155,8 +3536,48 @@ function finishRipJob(
                     job.completed_tracks
                     || 0
                 }`
-                + " tracks completed"
+                + `/${job.total_tracks || 0}`
+                + " selected tracks completed"
             );
+
+        ripCompleteTitle.textContent =
+            "Rip Completed with Errors";
+
+        ripCompleteMessage.textContent =
+            (
+                `${
+                    job.completed_tracks
+                    || 0
+                }`
+                + ` of ${job.total_tracks || 0}`
+                + " selected tracks ripped successfully."
+                + (
+                    failedTracks.length
+                        ? (
+                            "\nFailed track"
+                            + (
+                                failedTracks.length === 1
+                                    ? ": "
+                                    : "s: "
+                            )
+                            + failedTracks.join(", ")
+                        )
+                        : ""
+                )
+                + "\n\nThe failed track"
+                + (
+                    failedTracks.length === 1
+                        ? " is"
+                        : "s are"
+                )
+                + " selected and ready to retry."
+            );
+
+        ripCompleteRetryButton.hidden =
+            failedTracks.length === 0;
+
+        ripCompleteOverlay.hidden =
+            false;
     }
 
     updateRipButtonState();
@@ -3547,6 +3968,11 @@ metadataButton.addEventListener(
         await loadMetadata(
             source
         );
+
+        if (source !== "cdtext") {
+
+            await probeCdTextAvailability();
+        }
     }
 );
 
@@ -3650,6 +4076,11 @@ folderBrowserUp.addEventListener("click",async()=>{const p=folderBrowserCurrentP
 folderBrowserNew.addEventListener("click",createFolderFromBrowser);
 folderBrowserSelect.addEventListener("click",()=>{selectedOutputSubfolder=folderBrowserCurrentPath;destination.value=selectedOutputSubfolder?"/music/"+selectedOutputSubfolder:"/music";savePreferences();closeFolderBrowser();});
 
+retryFailedButton.addEventListener(
+    "click",
+    retryFailedTracks
+);
+
 ripButton.addEventListener(
     "click",
     startRip
@@ -3659,6 +4090,18 @@ ripButton.addEventListener(
 stopButton.addEventListener(
     "click",
     stopRip
+);
+
+
+ripCompleteRetryButton.addEventListener(
+    "click",
+    async () => {
+
+        ripCompleteOverlay.hidden =
+            true;
+
+        await retryFailedTracks();
+    }
 );
 
 
@@ -3732,6 +4175,9 @@ driveSettingsButton.disabled =
     true;
 
 ejectButton.disabled =
+    true;
+
+retryFailedButton.disabled =
     true;
 
 browseButton.disabled =
